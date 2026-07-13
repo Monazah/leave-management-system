@@ -38,6 +38,8 @@ Rather than focusing solely on application development, this project emphasizes 
 ---
 
 ## Architecture
+<img width="1536" height="1024" alt="ETE Diagram Leave-Management" src="https://github.com/user-attachments/assets/52414716-866c-4024-a22b-0f0dbfe8ee09" />
+
 Browser
 │
 ▼
