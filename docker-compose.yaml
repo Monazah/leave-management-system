@@ -1,0 +1,61 @@
+services:
+
+  db:
+    image: postgres:17
+    restart: unless-stopped
+
+    environment:
+      POSTGRES_DB: leave_management
+      POSTGRES_USER: leaveadmin
+      POSTGRES_PASSWORD: leave123
+
+    volumes:
+      - leave-db-data:/var/lib/postgresql/data
+
+    networks:
+      - leave-network
+    
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U leaveadmin -d leave_management"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+
+  app:
+    build: .
+    image: leave-management:v1
+
+    restart: unless-stopped
+
+    depends_on:
+      db:
+        condition: service_healthy
+
+    env_file:
+      - .env
+
+    networks:
+      - leave-network
+
+  nginx:
+    image: nginx:latest
+
+    depends_on:
+      - app
+
+    networks:
+      -  leave-network
+
+    ports:
+      - "80:80"
+ 
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+ 
+volumes:
+  leave-db-data:
+
+networks:
+  leave-network:
